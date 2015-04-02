@@ -35,6 +35,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    self.detailDescriptionLabel.text=self.str2;
     [self configureView];
 }
 

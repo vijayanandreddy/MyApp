@@ -11,7 +11,14 @@
 
 @interface MasterViewController ()
 
+{
+    NSMutableArray *countries;
+    NSMutableArray *cities;
+    
+}
 @property NSMutableArray *objects;
+
+
 @end
 
 @implementation MasterViewController
@@ -20,14 +27,20 @@
     [super awakeFromNib];
 }
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+ 
+    
+   countries=[[NSMutableArray alloc]initWithObjects:@"India",@"Singapore",@"china", nil];
+    cities=[[NSMutableArray alloc]initWithObjects:@"Hyderabad",@"chennai",@"Delhi" ,nil];
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     self.navigationItem.rightBarButtonItem = addButton;
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -43,6 +56,7 @@
     [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
+
 #pragma mark - Segues
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -56,18 +70,65 @@
 #pragma mark - Table View
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return 2;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.objects.count;
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    if (section==0) {
+        return countries.count;
+    }
+    else
+    {
+        return cities.count;
+    }
+    
+}
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    if(section==0)
+    {
+        return @"Countries";
+    }
+    else{
+        return @"Cities";
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+   UIStoryboard *mainstory=[UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+  DetailViewController *detail=[mainstory instantiateViewControllerWithIdentifier:@"DetailId"];
+  // DetailViewController *detail=[[DetailViewController alloc]init];
+    
+   
+  if(indexPath.section==0)
+  {
+      detail.str2=[countries objectAtIndex:indexPath.row];
+      
+  }
+    else
+    {
+        detail.str2=[cities objectAtIndex:indexPath.row];
+    }
+    
+   [self.navigationController pushViewController:detail animated:YES];
+    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-
-    NSDate *object = self.objects[indexPath.row];
-    cell.textLabel.text = [object description];
+    
+    //NSLog(@"%@",[countries objectAtIndex:0]);
+    if (indexPath.section==0) {
+        cell.textLabel.text=[countries objectAtIndex:indexPath.row];
+    }
+    else
+    {
+        cell.textLabel.text=[cities objectAtIndex:indexPath.row];
+    }
+    
+    
     return cell;
 }
 
